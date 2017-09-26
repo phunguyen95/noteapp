@@ -1,24 +1,58 @@
-import React from 'react';
-import expect from 'expect';
-import {mount} from 'enzyme';
-import {Meteor} from 'meteor/meteor';
+import React from "react";
+import expect from "expect";
+import { Meteor } from "meteor/meteor";
+import { mount } from "enzyme";
 
-import NoteListItem from './NoteListItem';
-if(Meteor.isClient){
-	describe('NoteListItem',function(){
-		it('should render title and timestamp',function(){
-			const title="my title here";
-			const updatedAt=1486137505429;
-			const wrapper=mount(<NoteListItem note={{title,updatedAt}} />);
-			expect(wrapper.find('h5').text()).toBe(title);
-			expect(wrapper.find('p').text()).toBe('2/04/17');
-		})
+import { notes } from "../fixtures/fixture";
+import { NoteListItem } from "./NoteListItem";
 
-		it('should set default title if no title set',function(){
-			 	const title="";
-			const updatedAt=1486137505429;
-			const wrapper=mount(<NoteListItem note={{title,updatedAt}} />);
-			expect(wrapper.find('h5').text()).toBe('Untitle');
-		})
-	})
+if (Meteor.isClient) {
+	describe("NoteListItem", function() {
+		let Session;
+
+		beforeEach(() => {
+			Session = {
+				set: expect.createSpy()
+			};
+		});
+
+		it("should render title and timestamp", function() {
+			const wrapper = mount(
+				<NoteListItem note={notes[0]} Session={Session} />
+			);
+
+			expect(wrapper.find("h5").text()).toBe(notes[0].title);
+			expect(wrapper.find("p").text()).toBe("2/04/17");
+		});
+
+		it("should set default title if no title set", function() {
+			const wrapper = mount(
+				<NoteListItem note={notes[1]} Session={Session} />
+			);
+
+			expect(wrapper.find("h5").text()).toBe("Untitle");
+		});
+
+		it("should call set on click", function() {
+			const wrapper = mount(
+				<NoteListItem note={notes[0]} Session={Session} />
+			);
+
+			wrapper.find("div").simulate("click");
+
+			expect(Session.set).toHaveBeenCalledWith(
+				"selectedNoteId",
+				notes[0]._id
+			);
+			// 	it('should call set on click',function(){
+			// 	//render notelistitem using either notes and session'
+			// 	const wrapper=mount(<NoteListItem note={notes[0]} Session={Session}/>);
+			// 	//find div and simulate click envent
+			// 	wrapper.find('div').simulate('click');
+
+			// 	//expect session.set to have been called with some argument
+			// 	expect(Session.set).toHaveBeenCalledWith('selectedNoteId',notes[0]._id);
+			// })
+		});
+	});
 }

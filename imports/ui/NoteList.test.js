@@ -5,22 +5,8 @@ import { Meteor } from "meteor/meteor";
 import { NoteListEmptyItem } from "./NoteListEmptyItem";
 
 import { NoteList } from "./NoteList";
-const notes = [
-	{
-		id: "123bc",
-		title: "test title",
-		body: "",
-		updatedAt: 0,
-		userId: "userId1"
-	},
-	{
-		id: "noteid2",
-		title: "test title",
-		body: "",
-		updatedAt: 0,
-		userId: "userid2"
-	}
-];
+import {notes} from '../fixtures/fixture';
+
 if (Meteor.isClient) {
 	describe("NoteList", function() {
 		it("should render NoteListItem for each note", function() {
@@ -34,5 +20,16 @@ if (Meteor.isClient) {
 			expect(wrapper.find("NoteListItem").length).toBe(0);
 
 		});
+		// 	it('should call set on click',function(){
+		// 	//render notelistitem using either notes and session'
+		// 	const wrapper=mount(<NoteListItem note={notes[0]} Session={Session}/>);
+		// 	//find div and simulate click envent
+		// 	wrapper.find('div').simulate('click');
+
+		// 	//expect session.set to have been called with some argument
+		// 	expect(Session.set).toHaveBeenCalledWith('selectedNoteId',notes[0]._id);
+		// })
+
 	});
+
 }
